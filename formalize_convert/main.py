@@ -11,7 +11,8 @@ def generate_response(question: str, context: str) -> str:
         "question": {"role": "user", "content": question},
         "context": {"role": "system", "content": context}
     }
-    response = requests.post(URL, headers={"Content-Type": "application/json"}, data=json.dumps(data))
+    response = requests.post(
+        URL, headers={"Content-Type": "application/json"}, data=json.dumps(data))
 
     if response.status_code == 200:
         return response.text
@@ -77,7 +78,8 @@ def formalize(user_query: str):
             print(trs)
             return trs
         else:
-            print(f"Не удалось получить формализованный запрос после {MAX_ATTEMPTS} попыток.")
+            print(
+                f"Не удалось получить формализованный запрос после {MAX_ATTEMPTS} попыток.")
 
     except Exception as e:
         print(f"Произошла ошибка: {e}")
@@ -88,7 +90,8 @@ def convert(user_query: str, formalized_query: str):
     trs = ''
     variables_pattern = r'variables=([a-zA-Z],)*[a-zA-Z]'
     formalized_query = formalized_query.replace(' ', '')
-    user_query = user_query.replace(' ', '').replace('*', '').replace('{', '').replace('}', '').replace('^', '')
+    user_query = user_query.replace(' ', '').replace(
+        '*', '').replace('{', '').replace('}', '').replace('^', '')
     letters = []
     if re.search(variables_pattern, formalized_query):
         matches = re.finditer(variables_pattern, formalized_query)
@@ -139,7 +142,8 @@ def convert(user_query: str, formalized_query: str):
                     interp += 1
                     letters += re.findall(r'[a-zA-Z]', query_line[i])
                 else:
-                    print(f'{query_line[i]} не присутсвует в начальном запросе')
+                    print(
+                        f'{query_line[i]} не присутсвует в начальном запросе')
                     return False
 
         letters = set(letters)
@@ -155,6 +159,7 @@ def convert(user_query: str, formalized_query: str):
     return trs
 
 
-user_query = "Дана система переписывания термов (TRS): f(x)=a, g(x)=f(f(x)), u(x,y)=c(g(x),f(y)). Я интерпретирую её конструкторы так: a=1, f(x)=x**2+2*x+1, g(x)=x**3, u(x,y)=x*y, c(x,y)=x+y. Доказывает ли моя интерпретация завершимость trs?"
+if __name__ == "__main__":
+    user_query = "Дана система переписывания термов (TRS): f(x)=a, g(x)=f(f(x)), u(x,y)=c(g(x),f(y)). Я интерпретирую её конструкторы так: a=1, f(x)=x**2+2*x+1, g(x)=x**3, u(x,y)=x*y, c(x,y)=x+y. Доказывает ли моя интерпретация завершимость trs?"
 
-formalize(user_query) #возвращает trs и интерпретацию
+    formalize(user_query)  # возвращает trs и интерпретацию
